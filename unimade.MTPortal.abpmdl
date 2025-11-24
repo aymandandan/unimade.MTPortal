@@ -1,0 +1,113 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.LeptonXLiteTheme": {
+      "version": "5.0.0",
+      "isInstalled": true,
+      "creationTime": "11/24/2025 22:01:39 +00:00"
+    },
+    "Volo.Abp.Account": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/24/2025 22:01:39 +00:00"
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/24/2025 22:01:39 +00:00"
+    },
+    "Volo.Abp.Identity": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/24/2025 22:01:39 +00:00"
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/24/2025 22:01:39 +00:00"
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/24/2025 22:01:39 +00:00"
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/24/2025 22:01:39 +00:00"
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "10.0.0",
+      "isInstalled": true,
+      "creationTime": "11/24/2025 22:01:39 +00:00"
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "unimade.MTPortal.Application": {
+      "path": "src/unimade.MTPortal.Application/unimade.MTPortal.Application.abppkg",
+      "folder": "src"
+    },
+    "unimade.MTPortal.Application.Tests": {
+      "path": "test/unimade.MTPortal.Application.Tests/unimade.MTPortal.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "unimade.MTPortal.Domain.Shared": {
+      "path": "src/unimade.MTPortal.Domain.Shared/unimade.MTPortal.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "unimade.MTPortal.Application.Contracts": {
+      "path": "src/unimade.MTPortal.Application.Contracts/unimade.MTPortal.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "unimade.MTPortal.HttpApi": {
+      "path": "src/unimade.MTPortal.HttpApi/unimade.MTPortal.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "unimade.MTPortal.HttpApi.Client": {
+      "path": "src/unimade.MTPortal.HttpApi.Client/unimade.MTPortal.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "unimade.MTPortal.Web": {
+      "path": "src/unimade.MTPortal.Web/unimade.MTPortal.Web.abppkg",
+      "folder": "src"
+    },
+    "unimade.MTPortal.Web.Tests": {
+      "path": "test/unimade.MTPortal.Web.Tests/unimade.MTPortal.Web.Tests.abppkg",
+      "folder": "test"
+    },
+    "unimade.MTPortal.EntityFrameworkCore.Tests": {
+      "path": "test/unimade.MTPortal.EntityFrameworkCore.Tests/unimade.MTPortal.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "unimade.MTPortal.EntityFrameworkCore": {
+      "path": "src/unimade.MTPortal.EntityFrameworkCore/unimade.MTPortal.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "unimade.MTPortal.TestBase": {
+      "path": "test/unimade.MTPortal.TestBase/unimade.MTPortal.TestBase.abppkg",
+      "folder": "test"
+    },
+    "unimade.MTPortal.Domain.Tests": {
+      "path": "test/unimade.MTPortal.Domain.Tests/unimade.MTPortal.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "unimade.MTPortal.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/unimade.MTPortal.HttpApi.Client.ConsoleTestApp/unimade.MTPortal.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "unimade.MTPortal.DbMigrator": {
+      "path": "src/unimade.MTPortal.DbMigrator/unimade.MTPortal.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "unimade.MTPortal.Domain": {
+      "path": "src/unimade.MTPortal.Domain/unimade.MTPortal.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}
