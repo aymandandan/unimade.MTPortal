@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using unimade.MTPortal.Users;
 using Volo.Abp.Identity;
+using Volo.Abp.Localization;
 using Volo.Abp.ObjectExtending;
 using Volo.Abp.Threading;
 
@@ -37,35 +39,43 @@ public static class MTPortalModuleExtensionConfigurator
 
     private static void ConfigureExtraProperties()
     {
-        /* You can configure extra properties for the
-         * entities defined in the modules used by your application.
-         *
-         * This class can be used to define these extra properties
-         * with a high level, easy to use API.
-         *
-         * Example: Add a new property to the user entity of the identity module
-
-           ObjectExtensionManager.Instance.Modules()
-              .ConfigureIdentity(identity =>
-              {
-                  identity.ConfigureUser(user =>
-                  {
-                      user.AddOrUpdateProperty<string>( //property type: string
-                          "SocialSecurityNumber", //property name
-                          property =>
-                          {
-                              //validation rules
-                              property.Attributes.Add(new RequiredAttribute());
-                              property.Attributes.Add(new StringLengthAttribute(64) {MinimumLength = 4});
-
-                              //...other configurations for this property
-                          }
-                      );
-                  });
-              });
-
-         * See the documentation for more:
-         * https://abp.io/docs/latest/framework/architecture/modularity/extending/module-entity-extensions
-         */
+        ObjectExtensionManager.Instance.Modules()
+            .ConfigureIdentity(identity =>
+            {
+                identity.ConfigureUser(user =>
+                {
+                    user.AddOrUpdateProperty<UserType>(
+                        "UserType",
+                        property =>
+                        {
+                            property.DefaultValue = UserType.Public;
+                        }
+                    );
+                });
+            })
+            .ConfigureTenantManagement(tenant =>
+            {
+                tenant.ConfigureTenant(tenantEntity =>
+                {
+                    tenantEntity.AddOrUpdateProperty<string>(
+                        "Country",
+                        property =>
+                        {
+                            property.Attributes.Add(new MaxLengthAttribute(64));
+                            property.DisplayName = new FixedLocalizableString("Country");
+                        }
+                    );
+                    tenantEntity.AddOrUpdateProperty<string>(
+                        "ContactEmail",
+                        property =>
+                        {
+                            property.Attributes.Add(new MaxLengthAttribute(256));
+                            property.Attributes.Add(new EmailAddressAttribute());
+                            property.Attributes.Add(new DataTypeAttribute(DataType.EmailAddress));
+                            property.DisplayName = new FixedLocalizableString("Contact Email");
+                        }
+                    );
+                });
+            });
     }
 }
