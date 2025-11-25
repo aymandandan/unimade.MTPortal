@@ -50,6 +50,9 @@ using Volo.Abp.OpenIddict;
 using Volo.Abp.Security.Claims;
 using Volo.Abp.SettingManagement.Web;
 using Volo.Abp.Studio.Client.AspNetCore;
+using Volo.Abp.MultiTenancy;
+using Volo.Abp.AspNetCore.MultiTenancy;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace unimade.MTPortal.Web;
 
@@ -143,6 +146,9 @@ public class MTPortalWebModule : AbpModule
         ConfigureNavigationServices();
         ConfigureAutoApiControllers();
         ConfigureSwaggerServices(context.Services);
+
+        if (MultiTenancyConsts.IsEnabled)
+            ConfigureTenantResolveOptions(hostingEnvironment);
 
         Configure<PermissionManagementOptions>(options =>
         {
@@ -244,6 +250,21 @@ public class MTPortalWebModule : AbpModule
                 options.CustomSchemaIds(type => type.FullName);
             }
         );
+    }
+
+    private void ConfigureTenantResolveOptions(IWebHostEnvironment hostingEnvironment)
+    {
+        if (!hostingEnvironment.IsProduction())
+        {
+            return;
+        }
+
+        var domainName = Environment.GetEnvironmentVariable("DOMAIN_NAME") ?? "mtportal.com";
+        Configure<AbpTenantResolveOptions>(options =>
+        {
+            options.TenantResolvers.Add(new DomainTenantResolveContributor("{0}." + domainName));
+        });
+        return;
     }
 
 
