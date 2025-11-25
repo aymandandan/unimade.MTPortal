@@ -14,8 +14,6 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-using unimade.MTPortal.EntityFrameworkCore.Configurations.Users;
-using unimade.MTPortal.EntityFrameworkCore.Configurations.Tenants;
 
 namespace unimade.MTPortal.EntityFrameworkCore;
 
@@ -80,11 +78,7 @@ public class MTPortalDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-
-        // Custom configurations
-        builder.ApplyConfiguration(new AppUserConfiguration());
-        builder.ApplyConfiguration(new AppTenantConfiguration());
-
+        
         /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>
