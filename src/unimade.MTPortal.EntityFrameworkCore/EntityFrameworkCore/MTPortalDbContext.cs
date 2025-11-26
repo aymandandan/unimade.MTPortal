@@ -15,6 +15,7 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using unimade.MTPortal.Accouncements;
+using unimade.MTPortal.Announcements;
 
 namespace unimade.MTPortal.EntityFrameworkCore;
 
@@ -86,7 +87,7 @@ public class MTPortalDbContext :
         {
             b.ToTable(MTPortalConsts.DbTablePrefix + "Announcements", MTPortalConsts.DbSchema);
             b.ConfigureByConvention();
-            b.Property(x => x.Title).IsRequired().HasMaxLength(256);
+            b.Property(x => x.Title).IsRequired().HasMaxLength(AnnouncementConsts.MaxTitleLength);
             b.Property(x => x.Content).IsRequired();
             b.Property(x => x.IsPublished).HasDefaultValue(false);
             b.HasIndex(x => new { x.TenantId, x.IsPublished, x.PublishDate });
