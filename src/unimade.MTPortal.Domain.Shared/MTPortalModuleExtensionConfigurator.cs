@@ -75,6 +75,14 @@ public static class MTPortalModuleExtensionConfigurator
                             property.DisplayName = new FixedLocalizableString("Contact Email");
                         }
                     );
+                    tenantEntity.AddOrUpdateProperty<string>(
+                        "DisplayName",
+                        property =>
+                        {
+                            property.Attributes.Add(new MaxLengthAttribute(128));
+                            property.DisplayName = new FixedLocalizableString("Display Name");
+                        }
+                    );
                 });
             });
     }
