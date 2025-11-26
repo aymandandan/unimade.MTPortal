@@ -14,6 +14,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using unimade.MTPortal.Accouncements;
 
 namespace unimade.MTPortal.EntityFrameworkCore;
 
@@ -25,8 +26,8 @@ public class MTPortalDbContext :
     ITenantManagementDbContext,
     IIdentityDbContext
 {
-    /* Add DbSet properties for your Aggregate Roots / Entities here. */
-
+    /* DbSet properties for Aggregate Roots / Entities */
+    public DbSet<Announcement> Announcements { get; set; }
 
     #region Entities from the modules
 
@@ -79,13 +80,14 @@ public class MTPortalDbContext :
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
         
-        /* Configure your own tables/entities inside here */
+        /* Tables/Entities configurations*/
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(MTPortalConsts.DbTablePrefix + "YourEntities", MTPortalConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+        builder.Entity<Announcement>(b =>
+        {
+            b.ToTable(MTPortalConsts.DbTablePrefix + "Announcements", MTPortalConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.Title).IsRequired().HasMaxLength(256);
+            b.Property(x => x.Content).IsRequired();
+        });
     }
 }
