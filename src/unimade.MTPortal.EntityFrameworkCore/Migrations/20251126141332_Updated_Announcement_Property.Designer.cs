@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 using unimade.MTPortal.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using unimade.MTPortal.EntityFrameworkCore;
 namespace unimade.MTPortal.Migrations
 {
     [DbContext(typeof(MTPortalDbContext))]
-    partial class MTPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251126141332_Updated_Announcement_Property")]
+    partial class Updated_Announcement_Property
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

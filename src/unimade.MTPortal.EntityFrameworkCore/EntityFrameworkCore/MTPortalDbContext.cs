@@ -88,6 +88,8 @@ public class MTPortalDbContext :
             b.ConfigureByConvention();
             b.Property(x => x.Title).IsRequired().HasMaxLength(256);
             b.Property(x => x.Content).IsRequired();
+            b.Property(x => x.IsPublished).HasDefaultValue(false);
+            b.HasIndex(x => new { x.TenantId, x.IsPublished, x.PublishDate });
         });
     }
 }

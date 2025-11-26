@@ -17,7 +17,7 @@ namespace unimade.MTPortal.Accouncements
 
         public bool IsPublished { get; private set; }
 
-        public DateTime? PublishedDate { get; private set; }
+        public DateTime? PublishDate { get; private set; }
 
         protected Announcement() { } // For ORM
 
@@ -39,13 +39,13 @@ namespace unimade.MTPortal.Accouncements
         public void Publish()
         {
             IsPublished = true;
-            PublishedDate = DateTime.UtcNow;
+            PublishDate = DateTime.UtcNow;
         }
 
         public void Unpublish()
         {
             IsPublished = false;
-            PublishedDate = null;
+            PublishDate = null;
         }
 
         public void SchedulePublication(DateTime publishDate)
@@ -54,7 +54,7 @@ namespace unimade.MTPortal.Accouncements
             {
                 throw new ArgumentException("Publish date must be in the future.", nameof(publishDate));
             }
-            PublishedDate = publishDate;
+            PublishDate = publishDate;
         }
 
     }
