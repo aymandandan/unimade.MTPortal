@@ -18,6 +18,9 @@
     "No": "No",
     "Actions": "Actions",
     "Edit": "Edit",
-    "NewAnnouncement": "New Announcement"
+    "Delete": "Delete",
+    "NewAnnouncement": "New Announcement",
+    "AnnouncementDeletionConfirmationMessage": "Are you sure you want to delete this announcement?",
+    "SuccessfullyDeleted": "Successfully deleted!"
   }
 }

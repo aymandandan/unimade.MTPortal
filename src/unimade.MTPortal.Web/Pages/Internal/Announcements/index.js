@@ -23,6 +23,20 @@
                                 action: function (data) {
                                     editModal.open({ id: data.record.id });
                                 }
+                            },
+                            {
+                                text: l('Delete'),
+                                confirmMessage: function (data) {
+                                    return l('AnnouncementDeletionConfirmationMessage', data.record.title);
+                                },
+                                action: function (data) {
+                                    unimade.mTPortal.announcements.announcement
+                                        .delete(data.record.id)
+                                        .then(function () {
+                                            abp.notify.info(l('SuccessfullyDeleted'));
+                                            dataTable.ajax.reload();
+                                        });
+                                }
                             }
                         ]
                     }
