@@ -6,6 +6,8 @@
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information visit",
     "Welcome": "Welcome",
     "Enum:UserType.0": "Public User",
-    "Enum:UserType.1": "Staff Member"
+    "Enum:UserType.1": "Staff Member",
+    "Menu:Internal.Announcements": "Announcement Management",
+    "Menu:Internal.Dashboard": "Dashboard",
   }
 }

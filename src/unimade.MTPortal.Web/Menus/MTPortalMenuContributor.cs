@@ -56,7 +56,29 @@ public class MTPortalMenuContributor : IMenuContributor
 
         //Administration->Settings
         administration.SetSubItemOrder(SettingManagementMenuNames.GroupName, 7);
-        
+
+        // Internal Dashboard
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                MTPortalMenus.InternalDashboard,
+                l["Menu:Internal.Dashboard"],
+                url: "/Internal/Dashboard",
+                icon: "fa fa-dashboard"
+            )
+        );
+
+        // Announcement
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                MTPortalMenus.Announcements,
+                l["Menu:Internal.Announcement"],
+                url: "/Internal/Announcements",
+                icon: "fa fa-bullhorn",
+                order: 2
+            )
+            //.RequirePermissions(MTPortalPermissions.Announcements.Default)
+        );
+
         return Task.CompletedTask;
     }
 }
