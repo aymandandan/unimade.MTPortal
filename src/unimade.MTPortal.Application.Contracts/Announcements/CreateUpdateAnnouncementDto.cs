@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace unimade.MTPortal.Announcements
 {
-    public class CreateUpdateAnnounementDto
+    public class CreateUpdateAnnouncementDto
     {
         [Required]
         [StringLength(AnnouncementConsts.MaxTitleLength)]

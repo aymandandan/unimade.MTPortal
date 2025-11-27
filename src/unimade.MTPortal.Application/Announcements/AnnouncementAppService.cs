@@ -16,11 +16,11 @@ namespace unimade.MTPortal.Announcements
             AnnouncementDto,
             Guid,
             AnnouncementGetListInput,
-            CreateUpdateAnnounementDto,
-            CreateUpdateAnnounementDto>,
+            CreateUpdateAnnouncementDto,
+            CreateUpdateAnnouncementDto>,
         IAnnouncementAppService
     {
-        public AnnouncementAppService(IRepository<Announcement, Guid> repository) 
+        public AnnouncementAppService(IRepository<Announcement, Guid> repository)
             : base(repository)
         {
 
@@ -58,7 +58,7 @@ namespace unimade.MTPortal.Announcements
         }
 
         // Override the CreateAsync method to set TenantId
-        public override async Task<AnnouncementDto> CreateAsync(CreateUpdateAnnounementDto input)
+        public override async Task<AnnouncementDto> CreateAsync(CreateUpdateAnnouncementDto input)
         {
             // Create the entity using the base class
             var announcement = new Announcement(
@@ -77,6 +77,23 @@ namespace unimade.MTPortal.Announcements
             await Repository.InsertAsync(announcement);
             await CurrentUnitOfWork.SaveChangesAsync();
 
+            return ObjectMapper.Map<Announcement, AnnouncementDto>(announcement);
+        }
+
+        public override async Task<AnnouncementDto> UpdateAsync(Guid id, CreateUpdateAnnouncementDto input)
+        {
+            var announcement = await Repository.GetAsync(id);
+            announcement.UpdateDetails(input.Title, input.Content);
+            if (input.IsPublished && !announcement.IsPublished)
+            {
+                announcement.Publish();
+            }
+            else if (!input.IsPublished && announcement.IsPublished)
+            {
+                announcement.Unpublish();
+            }
+            await Repository.UpdateAsync(announcement);
+            await CurrentUnitOfWork.SaveChangesAsync();
             return ObjectMapper.Map<Announcement, AnnouncementDto>(announcement);
         }
     }

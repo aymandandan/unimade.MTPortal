@@ -8,8 +8,8 @@ namespace unimade.MTPortal.Announcements
             AnnouncementDto,
             Guid,
             AnnouncementGetListInput,
-            CreateUpdateAnnounementDto,
-            CreateUpdateAnnounementDto>
+            CreateUpdateAnnouncementDto,
+            CreateUpdateAnnouncementDto>
     {
 
     }

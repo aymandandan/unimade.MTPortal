@@ -1,34 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.Threading.Tasks;
 using unimade.MTPortal.Announcements;
 
 namespace unimade.MTPortal.Web.Pages.Internal.Announcements
 {
-    public class CreateModalModel : MTPortalPageModel
+    public class EditModalModel : MTPortalPageModel
     {
+        [BindProperty(SupportsGet = true)]
+        [HiddenInput]
+        public Guid Id { get; set; }
+        
         [BindProperty]
         public CreateUpdateAnnouncementDto Announcement { get; set; }
 
         private readonly IAnnouncementAppService _announcementAppService;
 
-        public CreateModalModel(IAnnouncementAppService announcementAppService)
+        public EditModalModel(IAnnouncementAppService announcementAppService)
         {
             _announcementAppService = announcementAppService;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            Announcement = new CreateUpdateAnnouncementDto();
+            var announcementDto = await _announcementAppService.GetAsync(Id);
+            Announcement = ObjectMapper.Map<AnnouncementDto, CreateUpdateAnnouncementDto>(announcementDto);
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-            await _announcementAppService.CreateAsync(Announcement);
+            await _announcementAppService.UpdateAsync(Id, Announcement);
             return NoContent();
         }
     }

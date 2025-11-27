@@ -2,6 +2,7 @@
     var l = abp.localization.getResource('MTPortal');
 
     var createModal = new abp.ModalManager(abp.appPath + 'Internal/Announcements/CreateModal');
+    var editModal = new abp.ModalManager(abp.appPath + 'Internal/Announcements/EditModal');
 
     var dataTable = $('#AnnouncementsTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -12,6 +13,20 @@
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(unimade.mTPortal.announcements.announcement.getList),
             columnDefs: [
+                {
+                    title: l('Actions'),
+                    rowAction: {
+                        items: 
+                        [
+                            {
+                                text: l('Edit'),
+                                action: function (data) {
+                                    editModal.open({ id: data.record.id });
+                                }
+                            }
+                        ]
+                    }
+                },
                 {
                     title: l('Title'),
                     data: "title"
@@ -59,6 +74,10 @@
     createModal.onResult(function () {
         dataTable.ajax.reload();
     });
+
+    editModal.onResult(function () {
+        dataTable.ajax.reload();
+    })
 
     $('#NewAnnouncementButton').on("click", function (e) {
         e.preventDefault();
