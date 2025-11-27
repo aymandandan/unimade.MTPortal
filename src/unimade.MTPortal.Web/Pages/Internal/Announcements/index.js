@@ -1,6 +1,8 @@
 ﻿$(function () {
     var l = abp.localization.getResource('MTPortal');
 
+    var createModal = new abp.ModalManager(abp.appPath + 'Internal/Announcements/CreateModal');
+
     var dataTable = $('#AnnouncementsTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
@@ -53,4 +55,13 @@
             ]
         })
     );
+
+    createModal.onResult(function () {
+        dataTable.ajax.reload();
+    });
+
+    $('#NewAnnouncementButton').on("click", function (e) {
+        e.preventDefault();
+        createModal.open();
+    })
 })

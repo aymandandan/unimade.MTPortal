@@ -71,7 +71,7 @@ public class MTPortalMenuContributor : IMenuContributor
         context.Menu.AddItem(
             new ApplicationMenuItem(
                 MTPortalMenus.Announcements,
-                l["Menu:Internal.Announcement"],
+                l["Menu:Internal.Announcements"],
                 url: "/Internal/Announcements",
                 icon: "fa fa-bullhorn",
                 order: 2

@@ -11,7 +11,17 @@
 
 <abp-card>
     <abp-card-header>
-        <h2>@L["Announcements"]</h2>
+        <abp-row class="align-items-center justify-content-between">
+            <abp-column size-md="_6">
+                <abp-card-title>@L["Announcements"]</abp-card-title>
+            </abp-column>
+            <abp-column size-md="_6" class="text-end">
+                <abp-button id="NewAnnouncementButton"
+                            text="@L["NewAnnouncement"].Value"
+                            icon="plus"
+                            button-type="Primary" />
+            </abp-column>
+        </abp-row>
     </abp-card-header>
     <abp-card-body>
         <abp-table striped-rows="true" id="AnnouncementsTable"></abp-table>
