@@ -1,0 +1,56 @@
+﻿$(function () {
+    var l = abp.localization.getResource('MTPortal');
+
+    var dataTable = $('#AnnouncementsTable').DataTable(
+        abp.libs.datatables.normalizeConfiguration({
+            serverSide: true,
+            paging: true,
+            order: [[1, 'desc']],
+            searching: true,
+            scrollX: true,
+            ajax: abp.libs.datatables.createAjax(unimade.mTPortal.announcements.announcement.getList),
+            columnDefs: [
+                {
+                    title: l('Title'),
+                    data: "title"
+                },
+                {
+                    title: l('Content'),
+                    data: "content",
+                    render: function (data) {
+                        return data.length > 50 ? data.substr(0, 50) + '...' : data;
+                    }
+                },
+                {
+                    title: l('IsPublished'),
+                    data: "isPublished",
+                    render: function (data) {
+                        return data ? l('Yes') : l('No');
+                    }
+                },
+                {
+                    title: l('PublishDate'),
+                    data: "publishDate",
+                    render: function (data) {
+                        return luxon
+                            .DateTime
+                            .fromISO(data, {
+                                locale: abp.localization.currentCulture.name,
+                            }).toLocaleString();
+                    }
+                },
+                {
+                    title: l('CreationTime'),
+                    data: "creationTime",
+                    render: function (data) {
+                        return luxon
+                            .DateTime
+                            .fromISO(data, {
+                                locale: abp.localization.currentCulture.name,
+                            }).toLocaleString();
+                    }
+                }
+            ]
+        })
+    );
+})

@@ -9,5 +9,12 @@
     "Enum:UserType.1": "Staff Member",
     "Menu:Internal.Announcements": "Announcement Management",
     "Menu:Internal.Dashboard": "Dashboard",
+    "Title": "Title",
+    "Content": "Content",
+    "IsPublished": "Is Published",
+    "PublishDate": "Publish Date",
+    "CreationTime": "Creation Time",
+    "Yes": "Yes",
+    "No": "No"
   }
 }
