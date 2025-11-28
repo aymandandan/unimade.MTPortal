@@ -49,6 +49,7 @@ public static class MTPortalModuleExtensionConfigurator
                         property =>
                         {
                             property.DefaultValue = UserType.Public;
+                            property.DisplayName = new FixedLocalizableString("User Type");
                         }
                     );
                 });

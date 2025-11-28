@@ -7,6 +7,7 @@ using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.TenantManagement;
+using Volo.Abp.Authorization;
 
 namespace unimade.MTPortal;
 
@@ -16,6 +17,7 @@ namespace unimade.MTPortal;
     typeof(AbpPermissionManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpIdentityApplicationModule),
+    typeof(AbpAuthorizationModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule)
