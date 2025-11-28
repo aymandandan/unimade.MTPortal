@@ -21,6 +21,14 @@
     "Delete": "Delete",
     "NewAnnouncement": "New Announcement",
     "AnnouncementDeletionConfirmationMessage": "Are you sure you want to delete this announcement?",
-    "SuccessfullyDeleted": "Successfully deleted!"
+    "SuccessfullyDeleted": "Successfully deleted!",
+    "Permission:User": "User Management",
+    "Permission:User.UserType": "User Type Management",
+    "Permission:User.UserType.Update": "User Type Update",
+    "Permission:Announcement": "Announcement Management",
+    "Permission:Announcement.Create": "Create Announcement",
+    "Permission:Announcement.Edit": "Edit Announcement",
+    "Permission:Announcement.Delete": "Delete Announcement",
+    "Permission:Announcement.View": "View Announcements"
   }
 }
