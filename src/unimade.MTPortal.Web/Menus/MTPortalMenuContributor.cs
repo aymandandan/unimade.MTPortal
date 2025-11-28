@@ -7,6 +7,7 @@ using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Identity.Web.Navigation;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.TenantManagement.Web.Navigation;
+using System.Security.Policy;
 
 namespace unimade.MTPortal.Web.Menus;
 
@@ -76,7 +77,17 @@ public class MTPortalMenuContributor : IMenuContributor
                 icon: "fa fa-bullhorn",
                 order: 2
             )
-            //.RequirePermissions(MTPortalPermissions.Announcements.Default)
+            .RequirePermissions(MTPortalPermissions.Announcements.Manage)
+        );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                MTPortalMenus.PublicUsers,
+                l["Menu:Internal.PublicUsers"],
+                url: "/Internal/Users",
+                icon: "fas fa-user-friends"
+            )
+            .RequirePermissions(MTPortalPermissions.User.PublicManagement)
         );
 
         return Task.CompletedTask;

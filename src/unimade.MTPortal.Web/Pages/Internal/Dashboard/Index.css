@@ -1,0 +1,31 @@
+﻿.stat-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    }
+
+.stat-icon {
+    opacity: 0.8;
+}
+
+.stat-number {
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.list-group-item {
+    border: none;
+    padding: 1rem 0;
+}
+
+    .list-group-item:not(:last-child) {
+        border-bottom: 1px solid var(--bs-border-color) !important;
+    }

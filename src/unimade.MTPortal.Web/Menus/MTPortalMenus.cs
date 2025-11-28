@@ -8,4 +8,5 @@ public class MTPortalMenus
     public const string Home = Prefix + ".Home";
     public const string InternalDashboard = InternalPrefix + ".Dasboard";
     public const string Announcements = Prefix + ".Announcements";
+    public const string PublicUsers = InternalPrefix + "PublicUsers";
 }

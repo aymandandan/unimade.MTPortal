@@ -1,0 +1,226 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Badge
+@using Volo.Abp.MultiTenancy
+@using unimade.MTPortal.Web.Menus
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using Microsoft.AspNetCore.Mvc.Localization
+@using unimade.MTPortal.Localization
+@model unimade.MTPortal.Web.Pages.Internal.Dashboard.IndexModel
+@inject ICurrentTenant CurrentTenant
+@inject IHtmlLocalizer<MTPortalResource> L
+@{
+    ViewBag.PageTitle = "Dashboard";
+}
+
+@section styles {
+    <abp-style src="/Pages/Internal/Dashboard/Index.css" />
+}
+
+@section scripts {
+    <abp-script src="/Pages/Internal/Dashboard/Index.js" />
+}
+
+<abp-card>
+    <abp-card-header class="bg-primary text-white">
+        <abp-card-title>
+            <i class="fas fa-tachometer-alt me-2"></i>
+            @CurrentTenant.Name - Staff Dashboard
+        </abp-card-title>
+        <abp-card-subtitle>
+            <small class="text-white-50">Last updated: @DateTime.Now.ToString("MMM dd, yyyy hh:mm tt")</small>
+        </abp-card-subtitle>
+    </abp-card-header>
+
+    <abp-card-body>
+        <!-- Statistics Cards -->
+        <div class="row g-3 mb-4">
+            <!-- Public Users Count -->
+            <div class="col-xl-3 col-md-6">
+                <abp-card class="stat-card text-center border-0 shadow-sm">
+                    <abp-card-body class="py-4">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-users fa-2x text-primary"></i>
+                        </div>
+                        <h3 class="stat-number text-primary mb-2">@Model.DashboardStats.TotalPublicUsers</h3>
+                        <p class="stat-label text-muted mb-3">Public Users</p>
+                        <abp-button size="Small"
+                                    text="Manage Users"
+                                    icon="fas fa-cog"
+                                    button-type="Primary"
+                                    href="/Internal/Users" />
+                    </abp-card-body>
+                </abp-card>
+            </div>
+
+            <!-- Total Announcements -->
+            <div class="col-xl-3 col-md-6">
+                <abp-card class="stat-card text-center border-0 shadow-sm">
+                    <abp-card-body class="py-4">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-bullhorn fa-2x text-success"></i>
+                        </div>
+                        <h3 class="stat-number text-success mb-2">@Model.DashboardStats.TotalAnnouncements</h3>
+                        <p class="stat-label text-muted mb-3">Total Announcements</p>
+                        <abp-button size="Small"
+                                    text="Manage Announcements"
+                                    icon="fas fa-cog"
+                                    button-type="Success"
+                                    href="/Internal/Announcements" />
+                    </abp-card-body>
+                </abp-card>
+            </div>
+
+            <!-- Published Announcements -->
+            <div class="col-xl-3 col-md-6">
+                <abp-card class="stat-card text-center border-0 shadow-sm">
+                    <abp-card-body class="py-4">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-check-circle fa-2x text-info"></i>
+                        </div>
+                        <h3 class="stat-number text-info mb-2">@Model.DashboardStats.PublishedAnnouncements</h3>
+                        <p class="stat-label text-muted mb-3">Published</p>
+                        <abp-badge badge-type="Success" text="Live" />
+                    </abp-card-body>
+                </abp-card>
+            </div>
+
+            <!-- Draft Announcements -->
+            <div class="col-xl-3 col-md-6">
+                <abp-card class="stat-card text-center border-0 shadow-sm">
+                    <abp-card-body class="py-4">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-edit fa-2x text-warning"></i>
+                        </div>
+                        <h3 class="stat-number text-warning mb-2">@Model.DashboardStats.DraftAnnouncements</h3>
+                        <p class="stat-label text-muted mb-3">Drafts</p>
+                        <abp-badge badge-type="Warning" text="In Progress" />
+                    </abp-card-body>
+                </abp-card>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Quick Actions -->
+        <div class="row g-4">
+            <!-- Recent Announcements -->
+            <div class="col-lg-8">
+                <abp-card>
+                    <abp-card-header class="d-flex justify-content-between align-items-center">
+                        <abp-card-title>
+                            <i class="fas fa-clock me-2 text-primary"></i>Recent Announcements
+                        </abp-card-title>
+                        <abp-button size="Small"
+                                    text="View All"
+                                    button-type="Outline_Primary"
+                                    href="/Internal/Announcements" />
+                    </abp-card-header>
+                    <abp-card-body>
+                        @if (Model.RecentAnnouncements.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var announcement in Model.RecentAnnouncements)
+                                {
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">@announcement.Title</h6>
+                                                <p class="mb-1 text-muted small">
+                                                    @announcement.Content.TruncateWithPostfix(100)
+                                                </p>
+                                                <small class="text-muted">
+                                                    Created: @announcement.CreationTime.ToString("MMM dd, yyyy")
+                                                    @if (announcement.PublishDate.HasValue)
+                                                    {
+                                                        <span class="ms-2">
+                                                            Published: @announcement.PublishDate.Value.ToString("MMM dd, yyyy")
+                                                        </span>
+                                                    }
+                                                </small>
+                                            </div>
+                                            <div class="ms-3">
+                                                <abp-badge badge-type="@(announcement.IsPublished? AbpBadgeType.Success: AbpBadgeType.Warning)"
+                                                           text="@(announcement.IsPublished ? "Published" : "Draft")" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No announcements yet. Create your first announcement!</p>
+                                <abp-button text="Create Announcement"
+                                            button-type="Primary"
+                                            href="/Internal/Announcements/CreateModal" />
+                            </div>
+                        }
+                    </abp-card-body>
+                </abp-card>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-lg-4">
+                <abp-card>
+                    <abp-card-header>
+                        <abp-card-title>
+                            <i class="fas fa-bolt me-2 text-warning"></i>Quick Actions
+                        </abp-card-title>
+                    </abp-card-header>
+                    <abp-card-body>
+                        <div class="d-grid gap-2">
+                            <abp-button text="Create New Announcement"
+                                        icon="fas fa-plus"
+                                        button-type="Outline_Primary"
+                                        onclick="createAnnouncement()" />
+
+                            <abp-button text="View All Users"
+                                        icon="fas fa-user-friends"
+                                        button-type="Outline_Secondary"
+                                        href="/Internal/Users" />
+
+                            <abp-button text="System Settings"
+                                        icon="fas fa-cogs"
+                                        button-type="Outline_Info"
+                                        onclick="showSettings()" />
+                        </div>
+
+                        <!-- Tenant Info -->
+                        <abp-card class="mt-4">
+                            <abp-card-header>
+                                <abp-card-title class="small">Tenant Information</abp-card-title>
+                            </abp-card-header>
+                            <abp-card-body class="small">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Tenant:</strong>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        @CurrentTenant.Name
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-6">
+                                        <strong>ID:</strong>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <small class="text-muted">@CurrentTenant.Id?.ToString().TruncateWithPostfix(8)...</small>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-6">
+                                        <strong>Last Activity:</strong>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <small class="text-muted">@Model.DashboardStats.LastAnnouncementDate?.ToString("MMM dd")</small>
+                                    </div>
+                                </div>
+                            </abp-card-body>
+                        </abp-card>
+                    </abp-card-body>
+                </abp-card>
+            </div>
+        </div>
+    </abp-card-body>
+</abp-card>
