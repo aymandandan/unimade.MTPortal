@@ -9,6 +9,7 @@
     "Enum:UserType.1": "Staff Member",
     "Menu:Internal.Announcements": "Announcements",
     "Menu:Internal.Dashboard": "Dashboard",
+    "Menu:Internal.PublicUsers": "Public Users",
     "Title": "Title",
     "Content": "Content",
     "IsPublished": "Is Published",
