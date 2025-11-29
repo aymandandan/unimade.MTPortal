@@ -126,14 +126,30 @@ public class Announcement : AggregateRoot<Guid>, IMustHaveTenant
 
 4. **Run database migrations**
    ```bash
+   # Using the DBMigrator project (recommended)
+   cd src/unimade.MTPortal.DbMigrator
+   dotnet run
+   ```
+   
+   *Alternatively, you can use EF Core commands:*
+   ```bash
    dotnet ef database update
    ```
 
-5. **Run the application**
+5. **Set the Web project as startup project**
+   - In Visual Studio: Right-click on `unimade.MTPortal.Web` project → "Set as Startup Project"
+   - Or using CLI:
    ```bash
+   cd src/unimade.MTPortal.Web
    dotnet run
    ```
+
+6. **Run the application**
+   - Press F5 in Visual Studio, or
+   ```bash
+   dotnet run --project src/unimade.MTPortal.Web
    ```
+   - The application will be available at `https://localhost:44344`
 
 ## Security & Access Control
 
