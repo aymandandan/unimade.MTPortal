@@ -25,10 +25,10 @@
     <abp-card-header class="bg-primary text-white">
         <abp-card-title>
             <i class="fas fa-tachometer-alt me-2"></i>
-            @CurrentTenant.Name - Staff Dashboard
+            @CurrentTenant.Name - @L["StaffDashboard"]
         </abp-card-title>
         <abp-card-subtitle>
-            <small class="text-white-50">Last updated: @DateTime.Now.ToString("MMM dd, yyyy hh:mm tt")</small>
+            <small class="text-white-50">@L["LastUpdated"]: @DateTime.Now.ToString("MMM dd, yyyy hh:mm tt")</small>
         </abp-card-subtitle>
     </abp-card-header>
 
@@ -43,9 +43,9 @@
                             <i class="fas fa-users fa-2x text-primary"></i>
                         </div>
                         <h3 class="stat-number text-primary mb-2">@Model.DashboardStats.TotalPublicUsers</h3>
-                        <p class="stat-label text-muted mb-3">Public Users</p>
+                        <p class="stat-label text-muted mb-3">@L["PublicUsers"]</p>
                         <abp-button size="Small"
-                                    text="Manage Users"
+                                    text="@L["ManageUsers"].Value"
                                     icon="fas fa-cog"
                                     button-type="Primary"
                                     onclick="location.href='/Internal/Users'" />
@@ -61,9 +61,9 @@
                             <i class="fas fa-bullhorn fa-2x text-success"></i>
                         </div>
                         <h3 class="stat-number text-success mb-2">@Model.DashboardStats.TotalAnnouncements</h3>
-                        <p class="stat-label text-muted mb-3">Total Announcements</p>
+                        <p class="stat-label text-muted mb-3">@L["TotalAnnouncements"]</p>
                         <abp-button size="Small"
-                                    text="Manage Announcements"
+                                    text="@L["ManageAnnouncements"].Value"
                                     icon="fas fa-cog"
                                     button-type="Success"
                                     onclick="location.href='/Internal/Announcements'" />
@@ -79,8 +79,8 @@
                             <i class="fas fa-check-circle fa-2x text-info"></i>
                         </div>
                         <h3 class="stat-number text-info mb-2">@Model.DashboardStats.PublishedAnnouncements</h3>
-                        <p class="stat-label text-muted mb-3">Published</p>
-                        <abp-badge badge-type="Success" text="Live" />
+                        <p class="stat-label text-muted mb-3">@L["Published"]</p>
+                        <abp-badge badge-type="Success" text="@L["Live"].Value" />
                     </abp-card-body>
                 </abp-card>
             </div>
@@ -93,8 +93,8 @@
                             <i class="fas fa-edit fa-2x text-warning"></i>
                         </div>
                         <h3 class="stat-number text-warning mb-2">@Model.DashboardStats.DraftAnnouncements</h3>
-                        <p class="stat-label text-muted mb-3">Drafts</p>
-                        <abp-badge badge-type="Warning" text="In Progress" />
+                        <p class="stat-label text-muted mb-3">@L["Drafts"]</p>
+                        <abp-badge badge-type="Warning" text="@L["InProgress"].Value" />
                     </abp-card-body>
                 </abp-card>
             </div>
@@ -107,10 +107,10 @@
                 <abp-card>
                     <abp-card-header class="d-flex justify-content-between align-items-center">
                         <abp-card-title>
-                            <i class="fas fa-clock me-2 text-primary"></i>Recent Announcements
+                            <i class="fas fa-clock me-2 text-primary"></i>@L["RecentAnnouncements"]
                         </abp-card-title>
                         <abp-button size="Small"
-                                    text="View All"
+                                    text="@L["ViewAll"].Value"
                                     button-type="Outline_Primary"
                                     onclick="location.href='/Internal/Announcements'" />
                     </abp-card-header>
@@ -128,18 +128,18 @@
                                                     @announcement.Content.TruncateWithPostfix(100)
                                                 </p>
                                                 <small class="text-muted">
-                                                    Created: @announcement.CreationTime.ToString("MMM dd, yyyy")
+                                                    @L["CreationTime"]: @announcement.CreationTime.ToString("MMM dd, yyyy")
                                                     @if (announcement.PublishDate.HasValue)
                                                     {
                                                         <span class="ms-2">
-                                                            Published: @announcement.PublishDate.Value.ToString("MMM dd, yyyy")
+                                                            @L["PublishDate"]: @announcement.PublishDate.Value.ToString("MMM dd, yyyy")
                                                         </span>
                                                     }
                                                 </small>
                                             </div>
                                             <div class="ms-3">
                                                 <abp-badge badge-type="@(announcement.IsPublished? AbpBadgeType.Success: AbpBadgeType.Warning)"
-                                                           text="@(announcement.IsPublished ? "Published" : "Draft")" />
+                                                           text="@(announcement.IsPublished? L["Published"].Value : L["Draft"].Value)" />
                                             </div>
                                         </div>
                                     </div>
@@ -150,8 +150,8 @@
                         {
                             <div class="text-center py-4">
                                 <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">No announcements yet. Create your first announcement!</p>
-                                <abp-button text="Create Announcement"
+                                <p class="text-muted">@L["NoAnnouncements"]</p>
+                                <abp-button text="@L["CreateAnnouncement"].Value"
                                             button-type="Primary"
                                             onclick="location.href='/Internal/Announcements/Index'" />
                             </div>
@@ -165,22 +165,22 @@
                 <abp-card>
                     <abp-card-header>
                         <abp-card-title>
-                            <i class="fas fa-bolt me-2 text-warning"></i>Quick Actions
+                            <i class="fas fa-bolt me-2 text-warning"></i>@L["QuickActions"]
                         </abp-card-title>
                     </abp-card-header>
                     <abp-card-body>
                         <div class="d-grid gap-2">
-                            <abp-button text="Create New Announcement"
+                            <abp-button text="@L["CreateNewAnnouncement"].Value"
                                         icon="fas fa-plus"
                                         button-type="Outline_Primary"
                                         onclick="createAnnouncement()" />
 
-                            <abp-button text="View Public Users"
+                            <abp-button text="@L["ViewPublicUsers"].Value"
                                         icon="fas fa-user-friends"
                                         button-type="Outline_Secondary"
                                         onclick="location.href='/Internal/Users/Index'" />
 
-                            <abp-button text="System Settings"
+                            <abp-button text="@L["SystemSettings"].Value"
                                         icon="fas fa-cogs"
                                         button-type="Outline_Info"
                                         onclick="showSettings()" />
@@ -189,12 +189,12 @@
                         <!-- Tenant Info -->
                         <abp-card class="mt-4">
                             <abp-card-header>
-                                <abp-card-title class="small">Tenant Information</abp-card-title>
+                                <abp-card-title class="small">@L["TenantInformation"]</abp-card-title>
                             </abp-card-header>
                             <abp-card-body class="small">
                                 <div class="row">
                                     <div class="col-6">
-                                        <strong>Tenant:</strong>
+                                        <strong>@L["Tenant"]:</strong>
                                     </div>
                                     <div class="col-6 text-end">
                                         @CurrentTenant.Name
@@ -210,7 +210,7 @@
                                 </div>
                                 <div class="row mt-1">
                                     <div class="col-6">
-                                        <strong>Last Activity:</strong>
+                                        <strong>@L["LastActivity"]:</strong>
                                     </div>
                                     <div class="col-6 text-end">
                                         <small class="text-muted">@Model.DashboardStats.LastAnnouncementDate?.ToString("MMM dd")</small>
