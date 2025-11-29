@@ -1,3 +1,4 @@
+using unimade.MTPortal.Users;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectExtending;
 using Volo.Abp.Threading;
@@ -12,17 +13,28 @@ public static class MTPortalDtoExtensions
     {
         OneTimeRunner.Run(() =>
         {
-                /* You can add extension properties to DTOs
-                 * defined in the depended modules.
-                 *
-                 * Example:
-                 *
-                 * ObjectExtensionManager.Instance
-                 *   .AddOrUpdateProperty<IdentityRoleDto, string>("Title");
-                 *
-                 * See the documentation for more:
-                 * https://docs.abp.io/en/abp/latest/Object-Extensions
-                 */
+            ObjectExtensionManager.Instance
+                .AddOrUpdateProperty<IdentityUserCreateDto, UserType>(
+                    "UserType",
+                    options =>
+                    {
+                        options.DefaultValue = UserType.Public;
+                    }
+                )
+                .AddOrUpdateProperty<IdentityUserUpdateDto, UserType>(
+                    "UserType",
+                    options =>
+                    {
+                        options.DefaultValue = UserType.Public;
+                    }
+                )
+                .AddOrUpdateProperty<IdentityUserDto, UserType>(
+                    "UserType",
+                    options =>
+                    {
+                        options.DefaultValue = UserType.Public;
+                    }
+                );
         });
     }
 }

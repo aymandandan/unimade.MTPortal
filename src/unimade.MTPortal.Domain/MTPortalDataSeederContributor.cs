@@ -52,14 +52,16 @@ namespace unimade.MTPortal
                     {
                         PublicRole.Permissions.ViewAnnouncements
                     },
-                    tenantId: context?.TenantId);
+                    tenantId: context?.TenantId,
+                    true);
             }
         }
 
         private async Task CreateRoleWithPermissionsAsync(
             string roleName,
             List<string> permissions,
-            Guid? tenantId)
+            Guid? tenantId,
+            bool isDefault = false)
         {
             // Check if role exists
             var existingRole = await _identityRoleManager.FindByNameAsync(roleName);
@@ -83,7 +85,7 @@ namespace unimade.MTPortal
             )
             {
                 IsPublic = true,
-                IsDefault = false
+                IsDefault = isDefault
             };
 
             var result = await _identityRoleManager.CreateAsync(newRole);
