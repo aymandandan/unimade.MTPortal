@@ -1,290 +1,327 @@
 ﻿@page
 @model unimade.MTPortal.Web.Pages.IndexModel
-@using unimade.MTPortal.Web.Menus
-@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using Microsoft.Extensions.Localization
+@using Volo.Abp.TenantManagement
 @using Microsoft.AspNetCore.Mvc.Localization
 @using unimade.MTPortal.Localization
-@using Volo.Abp.Users
-@inject IPageLayout PageLayout
-@inject IHtmlLocalizer<MTPortalResource> L
-@inject ICurrentUser CurrentUser
-@{
-    ViewBag.PageTitle = L["Home"];
-    PageLayout.Content.MenuItemName = MTPortalMenus.Home;
-}
+@inject IStringLocalizer<MTPortalResource> L
 
 @section styles {
     <abp-style src="/Pages/Index.css" />
 }
 
-<div class="row mb-3">
-    <div class="col-xl-6 col-12 d-flex">
-        <div class="card h-lg-100 w-100 overflow-hidden">
-            <div class="card-body">
-                <div class="starting-content pe-5">
-                    @if (!CurrentUser.IsAuthenticated)
-                    {
-                        <h3>@L["Welcome"]</h3>
-                        <p class="lead text-muted mb-2">@L["LongWelcomeMessage"]</p>
-                        <a href="/Account/Login" class="btn btn-primary mb-4"><i class="fa-solid fa-right-to-bracket me-1"></i><span>@L["Login"]</span></a>
-                    }
+@section scripts {
+    <abp-script src="/Pages/Index.js" />
+}
 
-                    <h4>Getting Started</h4>
-                    <p class="text-muted mb-2">Learn how to create and run
-                        a
-                        new web application using the application startup
-                        template.</p>
-
-                    <a href="https://abp.io/docs/latest/getting-started" class="btn  btn-brand  mb-2" target="_blank">Getting Started</a>
-
-                    <h4>Web Application Development Tutorial</h4>
-                    <p class="text-muted mb-2">Learn how to build an ABP based
-                        web
-                        application named Acme.BookStore.</p>
-                    <a href="https://abp.io/docs/latest/tutorials/book-store/part-1?UI=MVC&DB=EF" class="btn btn-primary soft mb-2" target="_blank">Explore Tutorial</a>
-                </div>
-                <img class="card-bg-image" src="/images/getting-started/bg-01.png">
-            </div>
-        </div>
+<div class="container mt-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 text-primary mb-3">
+            @L["WelcomeToMTPortal"]
+        </h1>
+        <p class="lead text-muted">
+            @L["PortalDescription"]
+        </p>
     </div>
-    <div class="col-xl-3 col-md-6 d-flex">
+
+    <!-- Admin Dashboard Section -->
+    @if (Model.IsUserAuthenticated && Model.IsAdmin)
+    {
         <div class="row">
-            <div class="col-12 d-flex">
-                <div class="card overflow-hidden mb-3">
-                    <div class="card-body d-flex flex-column">
-                        <div class="abp-support abp-logo mb-2"></div>
-                        <p class="text-muted mb-2">You can check for
-                            similar problems and solutions, or open a
-                            new topic to discuss your specific issue.</p>
-                        <a href="https://abp.io/support/questions" class="btn btn-brand soft" target="_blank">Visit Support</a>
-                        <img style="margin-bottom: -24px;" class="w-100 mt-auto" src="/images/getting-started/img-support.png">
+            <div class="col-12">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            @L["AdminDashboard"]
+                            @if (Model.IsHostAdmin)
+                            {
+                                <span class="badge bg-warning ms-2">Host Admin</span>
+                            }
+                            else if (Model.IsTenantAdmin)
+                            {
+                                <span class="badge bg-info ms-2">Tenant Admin</span>
+                            }
+                        </h5>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 d-flex">
-                <div class="card h-md-100 overflow-hidden">
-                    <div class="card-body d-flex flex-column">
-                        <div class="abp-blog abp-logo mb-2"></div>
-                        <p class="text-muted mb-2">You can find content
-                            on .NET development, cross-platform, ASP.NET
-                            application templates, ABP-related news, and
-                            more.</p>
-                        <a href="https://abp.io/blog" class="btn  btn-brand soft" target="_blank">Visit Blog</a>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Welcome Message -->
+                            <div class="col-md-12 mb-4">
+                                <h4>@Model.WelcomeMessage</h4>
+                                <p class="text-muted">@L["AdminWelcomeMessage"]</p>
+                            </div>
 
-                        <img style="margin-bottom: -24px;" class="w-100 mt-auto" src="/images/getting-started/img-blog.png">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6 d-flex">
-        <div class="card h-100 overflow-hidden">
-            <div class="card-body">
-                <div class="abp-community abp-logo mb-2"></div>
-                <p class="lead text-muted">A unique community platform
-                    for <span class="fw-bold">ABP Lovers!</span></p>
-                <p class="text-muted mb-2">Explore all ABP users'
-                    experiences with the ABP Framework, discover
-                    articles and videos on how to use ABP, and join
-                    raffles for a chance to win surprise gifts!</p>
-                <a class="btn btn-brand soft mb-3" href="https://abp.io/community/" target="_blank">Join ABP
-                    Community</a>
-            </div>
-            <img class="mt-3 w-100" src="/images/getting-started/img-community.png">
-        </div>
-    </div>
-</div>
+                            <!-- System Info Cards -->
+                            @if (Model.IsHostAdmin)
+                            {
+                                <!-- Host Admin View -->
+                                <div class="col-md-3 mb-3">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-building fa-2x text-primary mb-2"></i>
+                                            <h3>@Model.SystemInfo.TotalTenants</h3>
+                                            <p class="text-muted mb-0">@L["TotalTenants"]</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else if (Model.IsTenantAdmin)
+                            {
+                                <!-- Tenant Admin View -->
+                                <div class="col-md-3 mb-3">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-bullhorn fa-2x text-success mb-2"></i>
+                                            <h3>@Model.SystemInfo.TotalTenants</h3>
+                                            <p class="text-muted mb-0">Total Announcements</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
 
-<div class="row mb-3">
-    <div class="col-xl-3 col-lg-4">
-        <div class="card h-100 w-100 d-flex flex-column">
-            <div class="card-header">
-                <div class="card-title text-body">More from ABP.IO</div>
-            </div>
-            <div class="card-body pt-0">
+                            <div class="col-md-3 mb-3">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-users fa-2x text-success mb-2"></i>
+                                        <h3>@Model.SystemInfo.ActiveUsers</h3>
+                                        <p class="text-muted mb-0">@L["ActivePublicUsers"]</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                <div>
-                    <table class="table mb-0">
-                        <tbody>
-                            <tr>
-                                <td class="ps-0 d-flex">
-                                    <div class="rounded-circle me-2
-                                        flex-center bg-brand soft" style="width: 20px; height:
-                                        20px;"><i class="bi bi-check fs-4"></i></div>
-                                    <div> Latest Release Logs </div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25">
-                                    <a href="https://github.com/abpframework/abp/releases" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-0 d-flex">
-                                    <div class="rounded-circle me-2
-                                        flex-center bg-brand soft" style="width: 20px; height:
-                                        20px;"><i class="bi bi-check fs-4"></i></div>
-                                    <div> Video Courses </div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25">
-                                    <a href="https://abp.io/video-courses/essentials" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-0 d-flex">
-                                    <div class="rounded-circle me-2
-                                        flex-center bg-brand soft" style="width: 20px; height:
-                                        20px;"><i class="bi bi-check fs-4"></i></div>
-                                    <div> Samples </div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25">
-                                    <a href="https://abp.io/docs/latest/Samples/Index" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-0 d-flex">
-                                    <div class="rounded-circle me-2
-                                        flex-center bg-brand soft" style="width: 20px; height:
-                                        20px;"><i class="bi bi-check fs-4"></i></div>
-                                    <div> Books </div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25">
-                                    <a href="https://abp.io/books" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-0 d-flex border-bottom-0">
-                                    <div class="rounded-circle me-2
-                                        flex-center bg-brand soft" style="width: 20px; height:
-                                        20px;"><i class="bi bi-check fs-4"></i></div>
-                                    <div> FAQ </div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25
-                                    border-bottom-0">
-                                    <a href="https://abp.io/faq" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 col-lg-8 d-flex">
-        <div class="card h-100 w-100 d-flex flex-column">
-            <div class="card-body d-flex">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <p class="text-muted mb-0">THE OFFICIAL GUIDE</p>
-                        <h3>Mastering ABP Framework</h3>
-                        <p class="text-muted">Written by the creator of the ABP
-                            Framework, this book will help you gain a complete
-                            understanding of the framework
-                            and modern web application development techniques.</p>
-                        <div class="d-md-flex mb-2 mb-md-0">
-                            <a href="https://www.amazon.com/gp/product/B097Z2DM8Q" target="_blank" class="btn btn-primary soft
-                                me-md-2 mb-2 mb-md-0">
-                                Buy on Amazon US
-                            </a>
-                            <a href="https://www.packtpub.com/product/mastering-abp-framework/9781801079242" target="_blank" class="btn btn-primary soft mb-2
-                                mb-md-0">
-                                Buy on PACKT
-                            </a>
+                            <div class="col-md-3 mb-3">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-heartbeat fa-2x text-info mb-2"></i>
+                                        <div class="system-status-indicator status-healthy">
+                                            <h3>@Model.SystemInfo.SystemStatus</h3>
+                                        </div>
+                                        <p class="text-muted mb-0">@L["SystemStatus"]</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                                        <h3>@Model.SystemInfo.LastUpdate.ToString("MMM dd")</h3>
+                                        <p class="text-muted mb-0">@L["LastUpdate"]</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Admin Actions -->
+                            <div class="col-12 mt-4">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                                    @if (Model.IsHostAdmin)
+                                    {
+                                        <abp-button button-type="Primary"
+                                                    text="@L["ManageTenants"]"
+                                                    icon="cog"
+                                                    onclick="location.href='/TenantManagement'" />
+                                    }
+                                    else if (Model.IsTenantAdmin)
+                                    {
+                                        <abp-button button-type="Primary"
+                                                    text="Manage Announcements"
+                                                    icon="bullhorn"
+                                                    onclick="location.href='/Internal/Announcements'" />
+                                    }
+                                    <abp-button button-type="Secondary"
+                                                text="@L["SystemSettings"]"
+                                                icon="sliders-h"
+                                                onclick="showSettings()" />
+                                    <abp-button button-type="Info"
+                                                text="@L["ViewReports"]"
+                                                icon="chart-bar"
+                                                onclick="showReports()" />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 text-center">
-                        <img src="/images/getting-started/book.png" class="img-fluid">
-                    </div>
                 </div>
-
             </div>
         </div>
-    </div>
-    <div class="col-xl-3 col-lg-4">
-        <div class="card h-100 w-100 d-flex flex-column">
-            <div class="card-header">
-                <div class="card-title text-body">Follow us on Social Media</div>
+    }
+
+    <!-- Authenticated Host User Section (non-admin) -->
+    @if (Model.IsUserAuthenticated && Model.IsHostUser)
+    {
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            @L["ActionRequired"]
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="py-4">
+                            <i class="fas fa-door-open fa-4x text-warning mb-4"></i>
+                            <h4 class="text-warning mb-3">@L["TenantLoginRequired"]</h4>
+                            <p class="lead text-muted mb-4">
+                                You are currently authenticated to the host system. To access tenant-specific features and content,
+                                please select a tenant to continue.
+                            </p>
+
+                            <!-- Available Tenants for Selection -->
+                            @if (Model.AvailableTenants.Any())
+                            {
+                                <div class="row justify-content-center mb-4">
+                                    <div class="col-lg-8">
+                                        <h6 class="text-muted mb-3">Select a tenant to continue:</h6>
+                                        <div class="list-group">
+                                            @foreach (var tenant in Model.AvailableTenants)
+                                            {
+                                                <a href="@Url.Page("/Account/Login", new { tenant = tenant.Name })"
+                                                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <i class="fas fa-building text-primary me-2"></i>
+                                                        <strong>@tenant.Name</strong>
+                                                    </div>
+                                                    <div>
+                                                        <small class="text-muted me-2">Click to enter</small>
+                                                        <i class="fas fa-chevron-right text-muted"></i>
+                                                    </div>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info mb-4">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No tenants are currently available. Please contact your system administrator.
+                                </div>
+                            }
+
+                            <!-- Additional Options -->
+                            <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                                <abp-button button-type="Primary"
+                                            text="Refresh Tenant List"
+                                            icon="sync"
+                                            onclick="location.reload()" />
+
+                                <abp-button button-type="Secondary"
+                                            text="Account Settings"
+                                            icon="user-cog"
+                                            onclick="location.href='/Account/Manage'" />
+
+                                <abp-button button-type="Outline_Secondary"
+                                            text="Logout"
+                                            icon="sign-out-alt"
+                                            onclick="location.href='/Account/Logout'" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body pt-0">
-                <div>
-                    <table class="table mb-0">
-                        <tbody>
-                            <tr>
-                                <td class="ps-0 d-flex">
-                                    <img src="/images/getting-started/x-white.svg" class="me-2" style="background-color: black;">
-                                    <div>X.com</div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25">
-                                    <a href="https://twitter.com/abpframework" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-0 d-flex">
-                                    <img src="/images/getting-started/discord.svg" class="me-2">
-                                    <div>Discord</div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25">
-                                    <a href="https://abp.io/community/discord" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-0 d-flex">
-                                    <img src="/images/getting-started/stack-overflow.svg" class="me-2">
-                                    <div>Stack Overflow</div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25">
-                                    <a href="https://stackoverflow.com/questions/tagged/abp" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-0 d-flex">
-                                    <img src="/images/getting-started/youtube.svg" class="me-2">
-                                    <div>YouTube</div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25">
-                                    <a href="https://www.youtube.com/@@Volosoft" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-0 d-flex border-bottom-0">
-                                    <img src="/images/getting-started/instagram.svg" class="me-2">
-                                    <div>Instagram</div>
-                                </td>
-                                <td class="text-end pe-0 opacity-25
-                                    border-bottom-0">
-                                    <a href="https://www.instagram.com/abpframework/" target="_blank">
-                                        <i class="fa fa-external-link
-                                            text-dark"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        </div>
+    }
+
+    <!-- Tenant Selection Section (for unauthenticated users) -->
+    @if (!Model.IsUserAuthenticated)
+    {
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-door-open me-2"></i>
+                            @L["SelectTenantToLogin"]
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Tenant List -->
+                        @if (Model.AvailableTenants.Any())
+                        {
+                            <div class="row">
+                                @foreach (var tenant in Model.AvailableTenants)
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card tenant-card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title">
+                                                    <i class="fas fa-building me-2 text-primary"></i>
+                                                    @tenant.Name
+                                                </h6>
+                                            </div>
+                                            <div class="card-footer bg-transparent">
+                                                <div class="d-grid">
+                                                    <abp-button button-type="Primary"
+                                                                size="Small"
+                                                                text="@L["LoginToTenant"]"
+                                                                icon="sign-in-alt"
+                                                                onclick="location.href='@Url.Page("/Account/Login", new { tenant = tenant.Name })'" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <i class="fas fa-building fa-3x text-muted mb-3"></i>
+                                <h5>@L["NoTenantsAvailable"]</h5>
+                                <p class="text-muted">@L["NoTenantsMessage"]</p>
+                            </div>
+                        }
+
+                        <!-- Direct Login Option -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="text-center">
+                                    <p class="text-muted mb-3">@L["OrLoginDirectly"]</p>
+                                    <abp-button button-type="Outline_Primary"
+                                                text="@L["DirectLogin"]"
+                                                icon="key"
+                                                onclick="location.href='@Url.Page("/Account/Login")'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Features Section (Visible to all) -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4">@L["PlatformFeatures"]</h3>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                    <h5>@L["SecureAccess"]</h5>
+                    <p class="text-muted">@L["SecureAccessDescription"]</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-rocket fa-3x text-success mb-3"></i>
+                    <h5>@L["HighPerformance"]</h5>
+                    <p class="text-muted">@L["HighPerformanceDescription"]</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-hands-helping fa-3x text-info mb-3"></i>
+                    <h5>@L["MultiTenant"]</h5>
+                    <p class="text-muted">@L["MultiTenantDescription"]</p>
                 </div>
             </div>
         </div>
