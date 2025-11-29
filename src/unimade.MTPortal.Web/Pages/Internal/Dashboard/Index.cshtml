@@ -48,7 +48,7 @@
                                     text="Manage Users"
                                     icon="fas fa-cog"
                                     button-type="Primary"
-                                    href="/Internal/Users" />
+                                    onclick="location.href='/Internal/Users'" />
                     </abp-card-body>
                 </abp-card>
             </div>
@@ -66,7 +66,7 @@
                                     text="Manage Announcements"
                                     icon="fas fa-cog"
                                     button-type="Success"
-                                    href="/Internal/Announcements" />
+                                    onclick="location.href='/Internal/Announcements'" />
                     </abp-card-body>
                 </abp-card>
             </div>
@@ -112,7 +112,7 @@
                         <abp-button size="Small"
                                     text="View All"
                                     button-type="Outline_Primary"
-                                    href="/Internal/Announcements" />
+                                    onclick="location.href='/Internal/Announcements'" />
                     </abp-card-header>
                     <abp-card-body>
                         @if (Model.RecentAnnouncements.Any())
@@ -153,7 +153,7 @@
                                 <p class="text-muted">No announcements yet. Create your first announcement!</p>
                                 <abp-button text="Create Announcement"
                                             button-type="Primary"
-                                            href="/Internal/Announcements/CreateModal" />
+                                            onclick="location.href='/Internal/Announcements/Index'" />
                             </div>
                         }
                     </abp-card-body>
@@ -175,10 +175,10 @@
                                         button-type="Outline_Primary"
                                         onclick="createAnnouncement()" />
 
-                            <abp-button text="View All Users"
+                            <abp-button text="View Public Users"
                                         icon="fas fa-user-friends"
                                         button-type="Outline_Secondary"
-                                        href="/Internal/Users" />
+                                        onclick="location.href='/Internal/Users/Index'" />
 
                             <abp-button text="System Settings"
                                         icon="fas fa-cogs"

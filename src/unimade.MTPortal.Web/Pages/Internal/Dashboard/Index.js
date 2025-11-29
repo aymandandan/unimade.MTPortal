@@ -1,5 +1,5 @@
 ﻿function createAnnouncement() {
-    window.location.href = '/Internal/Announcements/CreateModal';
+    window.location.href = '/Internal/Announcements/Index';
 }
 
 function showSettings() {
