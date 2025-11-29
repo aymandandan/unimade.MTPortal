@@ -26,27 +26,46 @@ namespace unimade.MTPortal.Identity
             IIdentityUserRepository userRepository,
             IIdentityRoleRepository roleRepository,
             IOptions<IdentityOptions> identityOptions,
-            IPermissionChecker permissionChecker) 
+            IPermissionChecker permissionChecker)
             : base(userManager, userRepository, roleRepository, identityOptions, permissionChecker)
         {
         }
 
         public override async Task<IdentityUserDto> CreateAsync(IdentityUserCreateDto input)
         {
+            // Check if admin role is being assigned
+            var hasAdminRole = await HasAdminRoleInInputAsync(input);
+
+            // If admin role is assigned, ensure UserType is set to Staff
+            if (hasAdminRole)
+            {
+                input.SetProperty("UserType", UserType.Staff);
+            }
+
             var userDto = await base.CreateAsync(input);
             var user = await UserRepository.GetAsync(userDto.Id);
 
-            // Assign role based on UserType
-            await AssignRoleBasedOnUserTypeAsync(user, input);
+            // Assign roles based on UserType and admin role assignment
+            await AssignRoleBasedOnUserTypeAndAdminAsync(user, input, hasAdminRole);
 
             return userDto;
         }
 
         public override async Task<IdentityUserDto> UpdateAsync(Guid id, IdentityUserUpdateDto input)
         {
-            // Get user before update to check if UserType changed
+            // Get user before update to check current state
             var existingUser = await UserRepository.GetAsync(id);
             var previousUserType = existingUser.GetProperty<UserType>("UserType");
+            var wasAdmin = await UserManager.IsInRoleAsync(existingUser, "admin");
+
+            // Check if admin role is being assigned in this update
+            var willBeAdmin = await HasAdminRoleInInputAsync(input);
+
+            // If admin role is being assigned, ensure UserType is set to Staff
+            if (willBeAdmin)
+            {
+                input.SetProperty("UserType", UserType.Staff);
+            }
 
             // Let base implementation update the user
             var userDto = await base.UpdateAsync(id, input);
@@ -55,10 +74,10 @@ namespace unimade.MTPortal.Identity
             var updatedUser = await UserRepository.GetAsync(id);
             var currentUserType = updatedUser.GetProperty<UserType>("UserType");
 
-            // If UserType changed, reassign roles
-            if (previousUserType != currentUserType)
+            // If UserType changed OR admin role assignment changed, reassign roles
+            if (previousUserType != currentUserType || wasAdmin != willBeAdmin)
             {
-                await ReassignRolesBasedOnUserTypeAsync(updatedUser, previousUserType, currentUserType);
+                await ReassignRolesBasedOnUserTypeAndAdminAsync(updatedUser, previousUserType, currentUserType, wasAdmin, willBeAdmin);
             }
 
             return userDto;
@@ -79,24 +98,24 @@ namespace unimade.MTPortal.Identity
             return new PagedResultDto<IdentityUserDto>(filteredList.Count, pagedList);
         }
 
-        private async Task AssignRoleBasedOnUserTypeAsync(IdentityUser user, IdentityUserCreateDto input)
+        private async Task AssignRoleBasedOnUserTypeAndAdminAsync(IdentityUser user, IdentityUserCreateDto input, bool hasAdminRole)
         {
             var userType = input.GetProperty<UserType>("UserType");
-            await SetUserRolesAsync(user, userType);
+            await SetUserRolesAsync(user, userType, hasAdminRole);
         }
 
-        private async Task ReassignRolesBasedOnUserTypeAsync(IdentityUser user, UserType previousUserType, UserType currentUserType)
+        private async Task ReassignRolesBasedOnUserTypeAndAdminAsync(IdentityUser user, UserType previousUserType, UserType currentUserType, bool wasAdmin, bool willBeAdmin)
         {
-            // Remove old roles based on previous user type
-            await RemoveRolesByUserTypeAsync(user, previousUserType);
+            // Remove old roles based on previous user type and admin status
+            await RemoveRolesByUserTypeAsync(user, previousUserType, wasAdmin);
 
-            // Add new roles based on current user type
-            await SetUserRolesAsync(user, currentUserType);
+            // Add new roles based on current user type and admin status
+            await SetUserRolesAsync(user, currentUserType, willBeAdmin);
         }
 
-        private async Task SetUserRolesAsync(IdentityUser user, UserType userType)
+        private async Task SetUserRolesAsync(IdentityUser user, UserType userType, bool hasAdminRole)
         {
-            var roleNames = GetRoleNamesForUserType(userType);
+            var roleNames = GetRoleNamesForUserType(userType, hasAdminRole);
 
             foreach (var roleName in roleNames)
             {
@@ -109,9 +128,9 @@ namespace unimade.MTPortal.Identity
             }
         }
 
-        private async Task RemoveRolesByUserTypeAsync(IdentityUser user, UserType userType)
+        private async Task RemoveRolesByUserTypeAsync(IdentityUser user, UserType userType, bool wasAdmin)
         {
-            var rolesToRemove = GetRoleNamesForUserType(userType);
+            var rolesToRemove = GetRoleNamesForUserType(userType, wasAdmin);
 
             foreach (var roleName in rolesToRemove)
             {
@@ -121,8 +140,15 @@ namespace unimade.MTPortal.Identity
                 }
             }
         }
-        private static string[] GetRoleNamesForUserType(UserType userType)
+
+        private static string[] GetRoleNamesForUserType(UserType userType, bool hasAdminRole)
         {
+            // If user has admin role, assign both Public and Staff roles
+            if (hasAdminRole)
+            {
+                return new[] { PublicRole.Name, StaffRole.Name, "admin" };
+            }
+
             return userType switch
             {
                 UserType.Staff => new[] { StaffRole.Name },
@@ -131,5 +157,18 @@ namespace unimade.MTPortal.Identity
             };
         }
 
+        private async Task<bool> HasAdminRoleInInputAsync(IdentityUserCreateDto input)
+        {
+            // Check if admin role is in the input role names
+            var roleNames = input.RoleNames ?? Array.Empty<string>();
+            return roleNames.Contains("admin", StringComparer.OrdinalIgnoreCase);
+        }
+
+        private async Task<bool> HasAdminRoleInInputAsync(IdentityUserUpdateDto input)
+        {
+            // Check if admin role is in the input role names
+            var roleNames = input.RoleNames ?? Array.Empty<string>();
+            return roleNames.Contains("admin", StringComparer.OrdinalIgnoreCase);
+        }
     }
 }
