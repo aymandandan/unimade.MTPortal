@@ -21,7 +21,7 @@
     {
         <base href="@ThemingOptions.Value.BaseUrl" />
     }
-    <title>@(PageLayout.Content.Title ?? "Announcements") - @CurrentTenant.Name</title>>
+    <title>@(PageLayout.Content.Title ?? "Announcements") - @CurrentTenant.Name</title>
 
     <abp-style-bundle name="@LeptonXLiteThemeBundles.Styles.Global" />
     @await RenderSectionAsync("styles", false)
