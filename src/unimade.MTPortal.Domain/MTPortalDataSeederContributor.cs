@@ -42,7 +42,11 @@ namespace unimade.MTPortal
                     {
                         StaffRole.Permissions.AnnouncementManagement,
                         StaffRole.Permissions.PublicUsersManagement,
-                        StaffRole.Permissions.ViewAnnouncements
+                        StaffRole.Permissions.ViewAnnouncements,
+                        StaffRole.Permissions.GetUser,
+                        StaffRole.Permissions.CreateUser,
+                        StaffRole.Permissions.UpdateUser,
+                        StaffRole.Permissions.DeleteUser
                     },
                     tenantId: context?.TenantId);
 
