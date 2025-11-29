@@ -1,0 +1,28 @@
+﻿@page
+@using Microsoft.Extensions.Localization
+@using unimade.MTPortal.Localization
+@using unimade.MTPortal.Web.Pages.Internal.Users
+@model IndexModel
+@inject IStringLocalizer<MTPortalResource> L
+
+@section scripts {
+    <abp-script src="/Pages/Internal/Users/index.js"></abp-script>
+}
+<abp-card>
+    <abp-card-header>
+        <abp-row class="align-items-center justify-content-between">
+            <abp-column size-md="_6">
+                <abp-card-title>@L["PublicUsers"]</abp-card-title>
+            </abp-column>
+            <abp-column size-md="_6" class="text-end">
+                <abp-button id="NewPublicUserButton"
+                            text="@L["NewPublicUser"].Value"
+                            icon="plus"
+                            button-type="Primary" />
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        <abp-table striped-rows="true" id="PublicUsersTable"></abp-table>
+    </abp-card-body>
+</abp-card>

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using unimade.MTPortal.Roles;
 using unimade.MTPortal.Users;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
@@ -62,6 +62,21 @@ namespace unimade.MTPortal.Identity
             }
 
             return userDto;
+        }
+
+        public async Task<PagedResultDto<IdentityUserDto>> GetPublicUsersListAsync(GetIdentityUsersInput input)
+        {
+            var fullList = await base.GetListAsync(input);
+
+            var filteredList = fullList.Items.Where(u => u.GetProperty<UserType>("UserType") != UserType.Staff).ToList();
+
+            // apply pagination manually
+            var pagedList = filteredList
+                .Skip(input.SkipCount)
+                .Take(input.MaxResultCount)
+                .ToList();
+
+            return new PagedResultDto<IdentityUserDto>(filteredList.Count, pagedList);
         }
 
         private async Task AssignRoleBasedOnUserTypeAsync(IdentityUser user, IdentityUserCreateDto input)
