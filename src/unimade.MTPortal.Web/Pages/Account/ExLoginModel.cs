@@ -53,9 +53,9 @@ namespace unimade.MTPortal.Web.Pages.Account
                 return RedirectToPage("/Internal/Dashboard/Index");
 
             if (CurrentUser.IsInRole(PublicRole.Name))
-                return RedirectToPage("/External");
+                return RedirectToPage("/External/Index");
 
-            return RedirectToPage("/Account/AccessDenied/Index");
+            return RedirectToPage("/Account/AccessDenied");
         }
     }
 }
