@@ -1,58 +1,169 @@
-﻿# unimade.MTPortal
+﻿# Multi-Tenant Portal Application
 
-## About this solution
+## Project Overview
 
-This is a layered startup solution based on [Domain Driven Design (DDD)](https://abp.io/docs/latest/framework/architecture/domain-driven-design) practises. All the fundamental ABP modules are already installed. Check the [Application Startup Template](https://abp.io/docs/latest/solution-templates/layered-web-application) documentation for more info.
+A multi-tenant portal application built with ABP Framework that allows multiple organizations to share the same application instance while maintaining data isolation. The system consists of three main portals:
 
-### Pre-requirements
+- **Host Portal** - For system administrators to manage tenants
+- **Internal Portal** - For tenant staff members to manage users and announcements
+- **External Portal** - Public-facing portal for tenant customers
 
-* [.NET10.0+ SDK](https://dotnet.microsoft.com/download/dotnet)
-* [Node v18 or 20](https://nodejs.org/en)
+## Key Features
 
-### Configurations
+- **Multi-Tenancy** with shared database approach
+- **Role-based access control** (Staff vs Public Users)
+- **Tenant isolation** using TenantId in shared database
+- **Custom user types** (Public/Staff) via extended IdentityUser
+- **Announcement management** with publishing controls
+- **Separate layouts** for each portal type
 
-The solution comes with a default configuration that works out of the box. However, you may consider to change the following configuration before running your solution:
+## Database Architecture
 
-* Check the `ConnectionStrings` in `appsettings.json` files under the `unimade.MTPortal.Web` and `unimade.MTPortal.DbMigrator` projects and change it if you need.
+### Shared Database Approach
 
-### Before running the application
+This implementation uses a **shared database** with tenant isolation through `TenantId` columns, instead of separate databases per tenant. This approach provides:
 
-* Run `abp install-libs` command on your solution folder to install client-side package dependencies. This step is automatically done when you create a new solution, if you didn't especially disabled it. However, you should run it yourself if you have first cloned this solution from your source control, or added a new client-side package dependency to your solution.
-* Run `unimade.MTPortal.DbMigrator` to create the initial database. This step is also automatically done when you create a new solution, if you didn't especially disabled it. This should be done in the first run. It is also needed if a new database migration is added to the solution later.
+- **Simplified deployment** and maintenance
+- **Better resource utilization**
+- **Easier cross-tenant reporting** (when required)
+- **Reduced operational overhead**
 
-#### Generating a Signing Certificate
+### Required Entities
 
-In the production environment, you need to use a production signing certificate. ABP Framework sets up signing and encryption certificates in your application and expects an `openiddict.pfx` file in your application.
+#### Tenant (Extended ABP Tenant)
+- `Name` (ABP built-in)
+- `DisplayName` (ABP built-in)
+- `Country` (string) - *Custom field*
+- `ContactEmail` (string) - *Custom field*
 
-To generate a signing certificate, you can use the following command:
+#### User (Extended ABP IdentityUser)
+- All standard IdentityUser properties
+- `UserType` (enum: Public, Staff) - *Custom field*
 
-```bash
-dotnet dev-certs https -v -ep openiddict.pfx -p 09795eb0-d65f-49f2-a755-10ebf2366782
+#### Announcement
+- `Title` (string)
+- `Content` (string)
+- `IsPublished` (boolean)
+- `PublishDate` (datetime)
+- `TenantId` (Guid) - For tenant isolation
+
+## Portal Structure
+
+### Host Portal
+- **Tenant List Page** - View and manage all tenants
+- **Tenant Edit Page** - Modify tenant information
+
+### Internal Portal (Staff)
+- **Dashboard** - Overview of users and announcements
+- **Public User Management** - CRUD operations for public users
+- **Announcement Management** - Create and manage announcements
+
+### External Portal (Public)
+- **Home Page** - Display published announcements
+- **Registration Page** - Public user registration
+
+## Implementation Details
+
+### Multi-Tenancy Configuration
+
+The application uses ABP's built-in multi-tenancy features with these customizations:
+
+```csharp
+// In your module configuration
+Configure<AbpMultiTenancyOptions>(options =>
+{
+    options.IsEnabled = true;
+});
+
+// Database configuration for shared database
+Configure<AbpDbConnectionOptions>(options =>
+{
+    options.ConnectionStrings.Default = "YourSharedConnectionString";
+});
 ```
 
-> `09795eb0-d65f-49f2-a755-10ebf2366782` is the password of the certificate, you can change it to any password you want.
+### Tenant Resolution
 
-It is recommended to use **two** RSA certificates, distinct from the certificate(s) used for HTTPS: one for encryption, one for signing.
+- **Production**: Tenant resolved from URL (e.g., `tenant1.domain.com`)
+- **Development**: Tenant can be overridden via cookies for testing
 
-For more information, please refer to: [OpenIddict Certificate Configuration](https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html#registering-a-certificate-recommended-for-production-ready-scenarios)
+### Data Isolation
 
-> Also, see the [Configuring OpenIddict](https://abp.io/docs/latest/Deployment/Configuring-OpenIddict#production-environment) documentation for more information.
+All tenant-specific entities implement `IMustHaveTenant` interface:
 
-### Solution structure
+```csharp
+public class Announcement : AggregateRoot<Guid>, IMustHaveTenant
+{
+    public Guid TenantId { get; set; }
+    // Other properties...
+}
+```
 
-This is a layered monolith application that consists of the following applications:
+## Getting Started
 
-* `unimade.MTPortal.DbMigrator`: A console application which applies the migrations and also seeds the initial data. It is useful on development as well as on production environment.
-* `unimade.MTPortal.Web`: ASP.NET Core MVC / Razor Pages application that is the essential web application of the solution.
+### Prerequisites
 
+- .NET SDK 10.0+
+- ABP CLI
+- SQL Server
+- Visual Studio 2022+
 
-## Deploying the application
+### Installation
 
-Deploying an ABP application follows the same process as deploying any .NET or ASP.NET Core application. However, there are important considerations to keep in mind. For detailed guidance, refer to ABP's [deployment documentation](https://abp.io/docs/latest/Deployment/Index).
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd MultiTenantPortal
+   ```
 
-### Additional resources
+2. **Restore dependencies**
+   ```bash
+   dotnet restore
+   ```
 
-You can see the following resources to learn more about your solution and the ABP Framework:
+3. **Update database connection**
+   - Modify `appsettings.json` with your SQL Server connection string
 
-* [Web Application Development Tutorial](https://abp.io/docs/latest/tutorials/book-store/part-1)
-* [Application Startup Template](https://abp.io/docs/latest/startup-templates/application/index)
+4. **Run database migrations**
+   ```bash
+   dotnet ef database update
+   ```
+
+5. **Run the application**
+   ```bash
+   dotnet run
+   ```
+   ```
+
+## Security & Access Control
+
+- **Host Portal**: Accessible only to host administrators
+- **Internal Portal**: Restricted to staff users of each tenant
+- **External Portal**: Public access with user registration
+- **Data Isolation**: Automatic tenant filtering using ABP's data filters
+
+## Best Practices Implemented
+
+- **Domain-Driven Design** principles
+- **Repository pattern** with ABP's generic repositories
+- **Dependency Injection** throughout the application
+- **Clean separation** of concerns between portals
+- **Proper multi-tenant** data isolation in shared database
+- **Extensible entity design** for future enhancements
+
+## Deployment Notes
+
+The shared database approach simplifies deployment by requiring only one database instance. Ensure:
+
+- Proper indexing on `TenantId` columns for performance
+- Regular database backups
+- Monitoring of database growth
+- Tenant data isolation validation in queries
+
+## Support
+
+For technical support or questions about this implementation, please contact the development team.
+
+---
+
+*This project demonstrates advanced ABP Framework capabilities including multi-tenancy, entity extension, and portal separation using a shared database architecture.*
