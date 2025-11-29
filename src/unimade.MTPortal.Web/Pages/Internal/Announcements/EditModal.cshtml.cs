@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 using unimade.MTPortal.Announcements;
+using unimade.MTPortal.Roles;
 
 namespace unimade.MTPortal.Web.Pages.Internal.Announcements
 {
+    [Authorize(Roles = StaffRole.Name)]
     public class EditModalModel : MTPortalPageModel
     {
         [BindProperty(SupportsGet = true)]

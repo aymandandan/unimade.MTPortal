@@ -6,10 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using unimade.MTPortal.Announcements;
 using unimade.MTPortal.Dashboards;
+using unimade.MTPortal.Roles;
 
 namespace unimade.MTPortal.Web.Pages.Internal.Dashboard
 {
-    [Authorize(Roles = "Staff")]
+    [Authorize(Roles = StaffRole.Name)]
     public class IndexModel : MTPortalPageModel
     {
         [BindProperty]
