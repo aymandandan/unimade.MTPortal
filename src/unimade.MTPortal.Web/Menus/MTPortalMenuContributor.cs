@@ -32,7 +32,7 @@ public class MTPortalMenuContributor : IMenuContributor
         var currentUser = context.ServiceProvider.GetRequiredService<ICurrentUser>();
 
         //Home
-        if (!currentUser.IsAuthenticated || currentUser.IsInRole(StaffRole.Name) || currentUser.IsInRole(PublicRole.Name))
+        if (!currentUser.IsAuthenticated || currentUser.IsInRole("admin"))
         {
             context.Menu.AddItem(
                 new ApplicationMenuItem(
@@ -75,9 +75,22 @@ public class MTPortalMenuContributor : IMenuContributor
                     MTPortalMenus.InternalDashboard,
                     l["Menu:Internal.Dashboard"],
                     url: "/Internal/Dashboard",
-                    icon: "fa fa-dashboard"
+                    icon: "fa fa-dashboard",
+                    order: 2
                 )
                 .RequirePermissions(MTPortalPermissions.Announcements.Manage, MTPortalPermissions.User.PublicManagement)
+            );
+
+            // Public User Management
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                    MTPortalMenus.PublicUsers,
+                    l["Menu:Internal.PublicUsers"],
+                    url: "/Internal/Users",
+                    icon: "fas fa-user-friends",
+                    order: 3
+                )
+                .RequirePermissions(MTPortalPermissions.User.PublicManagement)
             );
 
             // Announcement
@@ -87,19 +100,9 @@ public class MTPortalMenuContributor : IMenuContributor
                     l["Menu:Internal.Announcements"],
                     url: "/Internal/Announcements",
                     icon: "fa fa-bullhorn",
-                    order: 2
+                    order: 4
                 )
                 .RequirePermissions(MTPortalPermissions.Announcements.Manage)
-            );
-
-            context.Menu.AddItem(
-                new ApplicationMenuItem(
-                    MTPortalMenus.PublicUsers,
-                    l["Menu:Internal.PublicUsers"],
-                    url: "/Internal/Users",
-                    icon: "fas fa-user-friends"
-                )
-                .RequirePermissions(MTPortalPermissions.User.PublicManagement)
             );
         }
 
