@@ -1,0 +1,35 @@
+﻿.announcement-content {
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+    .announcement-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+
+.announcement-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+    .announcement-card:hover {
+        transform: translateY(-2px);
+    }
+
+.card-sm {
+    height: 100%;
+}
+
+/* Print styles */
+@media print {
+    .btn, .page-header .col-auto, .mb-4 {
+        display: none !important;
+    }
+
+    .announcement-content {
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+}

@@ -8,6 +8,10 @@ using Volo.Abp.Identity.Web.Navigation;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.TenantManagement.Web.Navigation;
 using System.Security.Policy;
+using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.MultiTenancy;
+using Volo.Abp.Users;
+using unimade.MTPortal.Roles;
 
 namespace unimade.MTPortal.Web.Menus;
 
@@ -24,17 +28,22 @@ public class MTPortalMenuContributor : IMenuContributor
     private static Task ConfigureMainMenuAsync(MenuConfigurationContext context)
     {
         var l = context.GetLocalizer<MTPortalResource>();
+        var currentTenant = context.ServiceProvider.GetRequiredService<ICurrentTenant>();
+        var currentUser = context.ServiceProvider.GetRequiredService<ICurrentUser>();
 
         //Home
-        context.Menu.AddItem(
-            new ApplicationMenuItem(
-                MTPortalMenus.Home,
-                l["Menu:Home"],
-                "~/",
-                icon: "fa fa-home",
-                order: 1
-            )
-        );
+        if (!currentUser.IsAuthenticated || currentUser.IsInRole(StaffRole.Name) || currentUser.IsInRole(PublicRole.Name))
+        {
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                    MTPortalMenus.Home,
+                    l["Menu:Home"],
+                    "~/",
+                    icon: "fa fa-home",
+                    order: 1
+                )
+            );
+        }
 
 
         //Administration
@@ -58,37 +67,41 @@ public class MTPortalMenuContributor : IMenuContributor
         //Administration->Settings
         administration.SetSubItemOrder(SettingManagementMenuNames.GroupName, 7);
 
-        // Internal Dashboard
-        context.Menu.AddItem(
-            new ApplicationMenuItem(
-                MTPortalMenus.InternalDashboard,
-                l["Menu:Internal.Dashboard"],
-                url: "/Internal/Dashboard",
-                icon: "fa fa-dashboard"
-            )
-        );
+        if (currentTenant.Id != null)
+        {
+            // Internal Dashboard
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                    MTPortalMenus.InternalDashboard,
+                    l["Menu:Internal.Dashboard"],
+                    url: "/Internal/Dashboard",
+                    icon: "fa fa-dashboard"
+                )
+                .RequirePermissions(MTPortalPermissions.Announcements.Manage, MTPortalPermissions.User.PublicManagement)
+            );
 
-        // Announcement
-        context.Menu.AddItem(
-            new ApplicationMenuItem(
-                MTPortalMenus.Announcements,
-                l["Menu:Internal.Announcements"],
-                url: "/Internal/Announcements",
-                icon: "fa fa-bullhorn",
-                order: 2
-            )
-            .RequirePermissions(MTPortalPermissions.Announcements.Manage)
-        );
+            // Announcement
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                    MTPortalMenus.Announcements,
+                    l["Menu:Internal.Announcements"],
+                    url: "/Internal/Announcements",
+                    icon: "fa fa-bullhorn",
+                    order: 2
+                )
+                .RequirePermissions(MTPortalPermissions.Announcements.Manage)
+            );
 
-        context.Menu.AddItem(
-            new ApplicationMenuItem(
-                MTPortalMenus.PublicUsers,
-                l["Menu:Internal.PublicUsers"],
-                url: "/Internal/Users",
-                icon: "fas fa-user-friends"
-            )
-            .RequirePermissions(MTPortalPermissions.User.PublicManagement)
-        );
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                    MTPortalMenus.PublicUsers,
+                    l["Menu:Internal.PublicUsers"],
+                    url: "/Internal/Users",
+                    icon: "fas fa-user-friends"
+                )
+                .RequirePermissions(MTPortalPermissions.User.PublicManagement)
+            );
+        }
 
         return Task.CompletedTask;
     }

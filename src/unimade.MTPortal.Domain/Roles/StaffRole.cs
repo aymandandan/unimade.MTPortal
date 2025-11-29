@@ -11,9 +11,9 @@ namespace unimade.MTPortal.Roles
 
         public static class Permissions
         {
-            public const string AnnouncementManagement = "MTPortal.Announcements.Manage";
-            public const string ViewAnnouncements = "MTPortal.Announcements.View";
-            public const string PublicUsersManagement = "MTPortal.Users.Public.Management";
+            public const string AnnouncementManagement = "MTPortal.Announcement.Manage";
+            public const string ViewAnnouncements = "MTPortal.Announcement.View";
+            public const string PublicUsersManagement = "MTPortal.User.Public.Management";
         }
     }
 }

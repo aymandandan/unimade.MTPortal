@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Application.Dtos;
+﻿using System;
+using Volo.Abp.Application.Dtos;
 
 namespace unimade.MTPortal.Announcements
 {
@@ -6,6 +7,7 @@ namespace unimade.MTPortal.Announcements
     {
         public string? Filter { get; set; } // for general search 
         public bool? IsPublished { get; set; } // for filtering by published status
+        public Guid? ExcludeId { get; set; }
 
     }
 }

@@ -1,0 +1,147 @@
+﻿@page
+@using Volo.Abp.AspNetCore.Mvc.UI.Theming
+@using unimade.MTPortal.Web.Pages.External.Announcements
+@inject IThemeManager ThemeManager
+@model IndexModel
+@{
+    ViewBag.PageTitle = Model.Announcement?.Title ?? "Announcement";
+}
+
+@section styles {
+    <abp-style src="/Pages/External/announcements.css" />
+}
+
+<div class="container-fluid">
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="/External/Index" class="btn btn-ghost-primary">
+            <i class="ti ti-arrow-left me-2"></i>
+            Back to Announcements
+        </a>
+    </div>
+
+    @if (Model.Announcement != null)
+    {
+        <!-- Announcement Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h1 class="page-title">@Model.Announcement.Title</h1>
+                    <div class="text-muted">
+                        <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
+                            <span class="d-flex align-items-center">
+                                <i class="ti ti-calendar me-1"></i>
+                                Published: @Model.Announcement.PublishDate?.ToString("MMMM dd, yyyy") ?? "Not published"
+                            </span>
+                            <span class="badge @(Model.Announcement.IsPublished ? "bg-success" : "bg-warning")">
+                                @(Model.Announcement.IsPublished ? "Published" : "Draft")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="btn-list">
+                        <button class="btn btn-icon" onclick="window.print()" title="Print">
+                            <i class="ti ti-printer"></i>
+                        </button>
+                        <button class="btn btn-icon" onclick="shareAnnouncement()" title="Share">
+                            <i class="ti ti-share"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcement Content -->
+        <div class="card">
+            <div class="card-body">
+                <div class="announcement-content">
+                    @Html.Raw(Model.Announcement.Content.Replace("\n", "<br>"))
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Announcements -->
+        @if (Model.RelatedAnnouncements?.Items?.Any() == true)
+        {
+            <div class="mt-5">
+                <h3 class="mb-4">Related Announcements</h3>
+                <div class="row row-cards">
+                    @foreach (var related in Model.RelatedAnnouncements.Items.Take(3))
+                    {
+                        <div class="col-md-4">
+                            <div class="card card-sm">
+                                <div class="card-body">
+                                    <h4 class="card-title">@related.Title</h4>
+                                    <div class="text-muted mb-2">
+                                        <small>
+                                            <i class="ti ti-calendar me-1"></i>
+                                            @related.CreationTime.ToString("MMM dd, yyyy")
+                                        </small>
+                                    </div>
+                                    <p class="text-muted">
+                                        @if (related.Content.Length > 100)
+                                        {
+                                            @related.Content.Substring(0, 100)
+                            
+                                            <text>...</text>
+                                        }
+                                        else
+                                        {
+                                            @related.Content
+                                        }
+                                    </p>
+                                    <a href="/External/Announcements/Index?id=@related.Id" class="btn btn-sm btn-outline-primary">
+                                        Read More
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <!-- Not Found State -->
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="ti ti-news-off text-muted mb-3" style="font-size: 3rem;"></i>
+                <h3 class="text-muted">Announcement Not Found</h3>
+                <p class="text-muted">The announcement you're looking for doesn't exist or is no longer available.</p>
+                <a href="/External/Index" class="btn btn-primary">
+                    <i class="ti ti-arrow-left me-2"></i>
+                    Back to Announcements
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        function shareAnnouncement() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '@Model.Announcement?.Title',
+                    text: '@Model.Announcement?.Content?.Substring(0, Math.Min(100, Model.Announcement?.Content?.Length ?? 0))',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    abp.notify.info('Link copied to clipboard!');
+                });
+            }
+        }
+
+        // Mark announcement as viewed
+        document.addEventListener('DOMContentLoaded', function() {
+            if ('@Model.Announcement?.Id' !== '') {
+                // You can call an API here to increment view count
+                console.log('Announcement viewed: ', '@Model.Announcement?.Id');
+            }
+        });
+    </script>
+}

@@ -36,10 +36,12 @@ namespace unimade.MTPortal.Announcements
             if (!string.IsNullOrWhiteSpace(input.Filter))
             {
                 queryable = queryable
-            .WhereIf(!input.Filter.IsNullOrWhiteSpace(),
-                x => x.Title.Contains(input.Filter) || x.Content.Contains(input.Filter))
-            .WhereIf(input.IsPublished.HasValue,
-                x => x.IsPublished == input.IsPublished.Value);
+                    .WhereIf(!input.Filter.IsNullOrWhiteSpace(),
+                        x => x.Title.Contains(input.Filter) || x.Content.Contains(input.Filter))
+                    .WhereIf(input.IsPublished.HasValue,
+                        x => x.IsPublished == input.IsPublished.Value)
+                    .WhereIf(input.ExcludeId.HasValue,
+                        x => x.Id != input.ExcludeId.Value); 
             }
 
             // Apply sorting and paging

@@ -1,0 +1,133 @@
+﻿@page
+@using Volo.Abp.AspNetCore.Mvc.UI.Theming
+@inject IThemeManager ThemeManager
+@inject unimade.MTPortal.Announcements.IAnnouncementAppService AnnouncementAppService
+@model unimade.MTPortal.Web.Pages.External.IndexModel
+@{
+    ViewBag.PageTitle = "Announcements";
+}
+
+@section styles {
+    <abp-style src="/Pages/External/announcements.css" />
+}
+
+@section scripts {
+    <abp-script src="/Pages/External/announcements.js" />
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header d-print-none">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title">Latest Announcements</h2>
+                <div class="text-muted mt-1">Stay updated with the latest news and updates</div>
+            </div>
+            <div class="col-auto">
+                <div class="input-icon">
+                    <input type="text" class="form-control" placeholder="Search announcements..." id="searchInput">
+                    <span class="input-icon-addon">
+                        <i class="ti ti-search"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Announcements Grid -->
+    <div class="row row-cards" id="announcementsContainer">
+        @if (Model.Announcements?.Items?.Any() == true)
+        {
+            foreach (var announcement in Model.Announcements.Items)
+            {
+                <div class="col-md-6 col-lg-4 announcement-card">
+                    <div class="card card-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div>
+                                    <div class="h4 mb-0">@announcement.Title</div>
+                                    <div class="text-muted">
+                                        <small>
+                                            <i class="ti ti-calendar me-1"></i>
+                                            @announcement.CreationTime.ToString("MMM dd, yyyy")
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="ms-auto">
+                                    <span class="badge @(announcement.IsPublished ? "bg-success" : "bg-warning")">
+                                        @(announcement.IsPublished ? "Published" : "Draft")
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="text-muted mb-3 announcement-content">
+                                @if (announcement.Content.Length > 150)
+                                {
+                                    @announcement.Content.Substring(0, 150)
+                        
+                                    <text>...</text>
+                                }
+                                else
+                                {
+                                    @announcement.Content
+                                }
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                <a href="/External/Announcements/Index?id=@announcement.Id"
+                                    class="btn btn-primary btn-sm">
+                                    Read More
+                                    <i class="ti ti-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="ti ti-news-off text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h3 class="text-muted">No announcements found</h3>
+                        <p class="text-muted">There are no announcements available at the moment.</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.Announcements?.TotalCount > Model.Announcements?.Items?.Count)
+    {
+        <div class="d-flex mt-4">
+            <ul class="pagination ms-auto">
+                @{
+                    var totalPages = (int)Math.Ceiling((double)Model.Announcements.TotalCount / 10);
+                    var currentPage = (Model.SkipCount / 10) + 1;
+                }
+
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?skipCount=@(Math.Max(0, Model.SkipCount - 10))">
+                        Previous
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="?skipCount=@((i - 1) * 10)">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <a class="page-link" href="?skipCount=@(Model.SkipCount + 10)">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </div>
+    }
+</div>

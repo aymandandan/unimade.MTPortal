@@ -1,0 +1,7 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using unimade.MTPortal.Roles
+@attribute [Authorize(PublicRole.Name)]
+
+@{
+    Layout = "_LayoutExternal";
+}
